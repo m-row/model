@@ -61,3 +61,18 @@ func BoolParser(str string) bool {
 		return false
 	}
 }
+
+// SQLSelectURLPath returns a conditionally selected image path column as in
+//
+//		 CASE WHEN nullif(banners.img, '') is not null
+//	     THEN FORMAT('http://localhost:8056/%s', banners.img)
+//		 ELSE null
+//		 END as img
+func SQLSelectURLPath(domain, tableName, colName, aliasName string) string {
+	return `
+    CASE
+        WHEN nullif(` + tableName + `.` + colName + `, '') is not null
+        THEN FORMAT('` + domain + `/%s', ` + tableName + `.` + colName + `)
+        ELSE null
+    END as ` + aliasName
+}
